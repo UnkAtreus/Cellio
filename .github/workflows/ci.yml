@@ -21,3 +21,7 @@ jobs:
         env:
           CELLIO_ADHOC_DEVELOPMENT: '1'
         run: ./scripts/build-macos.sh
+      - name: ZIP and DMG packaging
+        run: |
+          python3 scripts/package-macos.py --version 0.0.0-ci \
+            --output-dir "$RUNNER_TEMP/cellio-packages"

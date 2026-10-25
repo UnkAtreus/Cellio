@@ -92,12 +92,14 @@ if hashlib.sha256(Path(sys.argv[1]).read_bytes()).hexdigest()!=expected:
  raise SystemExit('Bundled Dark ICNS mismatch')
 ICON_DEFAULT_FALLBACK
 python3 scripts/package-sparkle.py embed "$mac_staged_app"
+# Keep distribution notices inside the signed app, not beside it in installers.
+cp LICENSE THIRD_PARTY_NOTICES.md "$mac_staged_app/Contents/Resources/"
 if [[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' "$mac_staged_app/Contents/Info.plist")" != Cellio.icns || "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconName' "$mac_staged_app/Contents/Info.plist")" != Cellio ]]; then
     print -u2 "Missing native bundle icon declarations"
     exit 1
 fi
-# Only compiled icon resources ship: never artwork inputs, catalogs or tool intermediates.
-if [[ -n "$(find "$mac_staged_app" -type f ! -path "$mac_staged_app/Contents/MacOS/cellio" ! -path "$mac_staged_app/Contents/Info.plist" ! -path "$mac_staged_app/Contents/Resources/Cellio.icns" ! -path "$mac_staged_app/Contents/Resources/Assets.car" ! -path "$mac_staged_app/Contents/Resources/Sparkle-LICENSE" ! -path "$mac_staged_app/Contents/Frameworks/Sparkle.framework/*" -print -quit)" ]]; then
+# Only runtime resources and notices ship; never artwork inputs or tool intermediates.
+if [[ -n "$(find "$mac_staged_app" -type f ! -path "$mac_staged_app/Contents/MacOS/cellio" ! -path "$mac_staged_app/Contents/Info.plist" ! -path "$mac_staged_app/Contents/Resources/Cellio.icns" ! -path "$mac_staged_app/Contents/Resources/Assets.car" ! -path "$mac_staged_app/Contents/Resources/LICENSE" ! -path "$mac_staged_app/Contents/Resources/THIRD_PARTY_NOTICES.md" ! -path "$mac_staged_app/Contents/Resources/Sparkle-LICENSE" ! -path "$mac_staged_app/Contents/Frameworks/Sparkle.framework/*" -print -quit)" ]]; then
     print -u2 "Unexpected file in staged app"
     exit 1
 fi

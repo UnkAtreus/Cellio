@@ -27,6 +27,7 @@
 !/scripts/build-macos.sh
 !/scripts/local-signing.py
 !/scripts/package-sparkle.py
+!/scripts/package-macos.py
 !/scripts/release-tool.py
 !/scripts/release-crypto.swift
 /TestTools/*
