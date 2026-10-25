@@ -4,14 +4,14 @@
 
 Cellio is an open-source native macOS app for checking accessory batteries without opening several vendor apps. This is an **early preview**: compatibility depends on the device, firmware and connection mode.
 
-[Download the preview](https://github.com/UnkAtreus/Cellio/releases) · [Supported devices](docs/device-support.md) · [Request a device](https://github.com/UnkAtreus/Cellio/issues/new?template=device-support.yml)
+[Download the preview](https://github.com/UnkAtreus/Cellio/releases/tag/v1.0.0-alpha.2) · [Supported devices](docs/device-support.md) · [Request a device](https://github.com/UnkAtreus/Cellio/issues/new?template=device-support.yml)
 
 ## Features
 
 - Battery readings for supported Apple, Logitech and Bluetooth accessories, including separate AirPods components when available.
 - Configurable low-battery alerts, using macOS notifications or a smooth on-screen alert with three layouts and nine positions.
 - Choose which devices and components to monitor or display; hide old devices and manage linked connections.
-- Pin up to three readings in the menu bar, using percentages or battery gauges, with optional separators.
+- Pin up to three readings in the menu bar, using percentages or battery gauges, with optional separators and adjustable spacing.
 - System, Light or Dark appearance, plus a choice of app artwork.
 
 Missing readings stay unknown rather than becoming 0%. A status dot keeps the menu compact; hover for a short explanation or click an orange/red dot to copy diagnostics.
@@ -28,7 +28,7 @@ The preview uses a persistent **self-signed certificate**, without Apple notariz
 
 ## Screenshots
 
-Native Dark UI on macOS 26. Menu and alert previews use **demonstration readings** and generic device names. The menu bar strip previews the actual renderer; Settings captures below are from released build 4.
+Native Dark UI on macOS 26. The menu bar strip and Settings captures are from **build 5 (alpha.2)**, with real readings at capture time. Menu and alert previews use the same native renderers with **demonstration readings** and generic device names.
 
 **Battery menu** — device batteries together, including separate AirPods components.
 
@@ -36,7 +36,7 @@ Native Dark UI on macOS 26. Menu and alert previews use **demonstration readings
 
 **Pinned menu bar readings** — see selected batteries without opening the menu.
 
-![Native menu bar renderer preview with mouse and headset battery percentages](docs/images/menubar-pinned-dark.png)
+![Build 5 menu bar with pinned mouse and headset battery percentages](docs/images/menubar-pinned-dark.png)
 
 **Low-battery alerts** — Large and Small on-screen layouts shown below. Choose from three layouts and nine positions, or use macOS notifications.
 
@@ -45,9 +45,11 @@ Native Dark UI on macOS 26. Menu and alert previews use **demonstration readings
 ![Small on-screen low-battery alert preview for an AirPods Pro case at 20 percent](docs/images/notification-small-dark.png)
 
 <details>
-<summary>Device controls, General and Permissions</summary>
+<summary>Menu Bar, device controls, General and Permissions</summary>
 
-The device battery value is the reading shown at capture time.
+Adjust the spacing between pinned items in **General → Menu Bar**. The device battery values below are the readings shown at capture time.
+
+![Menu Bar settings with item spacing slider and pinned devices](docs/images/menubar-settings-dark.png)
 
 ![MX Master4 battery and device controls](docs/images/mouse-dark.png)
 ![General settings](docs/images/general-dark.png)
