@@ -1,0 +1,89 @@
+name: Request device support
+description: Ask Cellio to support an accessory or report missing battery information.
+title: "[Device support]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Request support even if you have not tried Cellio. Unknown details are OK.
+        Describe one connection mode per request; link related requests for other modes.
+        A request does not mean this device is supported.
+
+        GitHub issues and attachments are public. Remove personal names, serial numbers,
+        Bluetooth addresses, credentials and unrelated device information before submitting.
+        Do not attach full system reports or packet captures.
+
+  - type: input
+    id: model
+    attributes:
+      label: Device name and model
+      description: Include the manufacturer and exact model from the device or packaging. Add the generation if known; unknown details are OK.
+      placeholder: "Example: Keychron K2 Max, stock firmware"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection mode
+      description: Choose the mode you want to use or tested. A charging cable alone does not establish a wired data connection.
+      options:
+        - Bluetooth
+        - USB receiver / dongle (2.4 GHz)
+        - Wired USB data
+        - Other
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: observed
+    attributes:
+      label: What have you observed?
+      options:
+        - Not tested with Cellio
+        - Device does not appear
+        - Device appears without battery information
+        - Battery information seems incorrect, incomplete, or stale
+        - Other
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions and setup (optional)
+      description: If known, include macOS and Cellio versions. Add device firmware, receiver model and vendor app/version when available. Leave unavailable details unknown.
+      placeholder: |
+        macOS:
+        Cellio (or not installed):
+        Firmware / stock or custom, if known:
+        Receiver and vendor app, if applicable:
+    validations:
+      required: false
+
+  - type: textarea
+    id: comparison
+    attributes:
+      label: Battery shown elsewhere (optional)
+      description: Does macOS or the manufacturer's app show a battery value in this connection mode? Include the value and where you saw it, or write Unknown / Not tested. Do not change modes just to fill this in.
+      placeholder: "Example: macOS Bluetooth settings shows 70%; Cellio shows no battery at about the same time."
+    validations:
+      required: false
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Additional details or screenshots (optional)
+      description: Add a short explanation, steps, product/manual link, related issue, or cropped screenshot. Review everything for personal information. A screenshot, terminal command and diagnostic dump are not required.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        A maintainer will review the request and may ask for a small, device-specific test.
+        If you would like to try a future test build, mention it above; this is optional.
+        Before copying your report into project evidence or reusing attachments in regression
+        tests, we will ask separately. No permission is inferred from an unanswered request.

@@ -1,0 +1,29 @@
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "orientation" : {
+      "start" : {
+        "x" : 0.5,
+        "y" : 0
+      },
+      "stop" : {
+        "x" : 0.5,
+        "y" : 1
+      }
+    },
+    "primary-color" : {
+      "matching-style" : "fully-qualified-name",
+      "name" : "Cellio_Assets\/Color-3",
+      "type" : "color-set"
+    },
+    "secondary-color" : {
+      "matching-style" : "fully-qualified-name",
+      "name" : "Cellio_Assets\/Color-4",
+      "type" : "color-set"
+    },
+    "type" : "linear-gradient"
+  }
+}

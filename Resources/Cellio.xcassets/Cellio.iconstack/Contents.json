@@ -1,0 +1,87 @@
+{
+  "groups" : [
+    {
+      "filename" : "Group.iconstackgroup"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "background" : [
+      {
+        "icon-studio-appearance" : "unspecified",
+        "icon-studio-idiom" : "unspecified",
+        "icon-studio-localization" : "unspecified",
+        "value" : {
+          "color" : {
+            "matching-style" : "fully-qualified-name",
+            "name" : "Cellio_Assets\/Color-2",
+            "type" : "color-set"
+          },
+          "type" : "solid"
+        }
+      },
+      {
+        "icon-studio-appearance" : "light",
+        "icon-studio-idiom" : "macOS",
+        "icon-studio-localization" : "unspecified",
+        "value" : {
+          "color" : {
+            "matching-style" : "fully-qualified-name",
+            "name" : "Cellio_Assets\/Color-2",
+            "type" : "color-set"
+          },
+          "type" : "solid"
+        }
+      },
+      {
+        "icon-studio-appearance" : "dark",
+        "icon-studio-idiom" : "macOS",
+        "icon-studio-localization" : "unspecified",
+        "value" : {
+          "gradient" : {
+            "matching-style" : "fully-qualified-name",
+            "name" : "Cellio_Assets\/Gradient-1",
+            "type" : "icon-stack-gradient"
+          },
+          "type" : "gradient"
+        }
+      },
+      {
+        "icon-studio-appearance" : "tinted",
+        "icon-studio-idiom" : "macOS",
+        "icon-studio-localization" : "unspecified",
+        "value" : {
+          "color" : {
+            "matching-style" : "fully-qualified-name",
+            "name" : "Cellio_Assets\/Color-2",
+            "type" : "color-set"
+          },
+          "type" : "solid"
+        }
+      }
+    ],
+    "canvas-size" : [
+      {
+        "icon-studio-appearance" : "unspecified",
+        "icon-studio-idiom" : "unspecified",
+        "icon-studio-localization" : "unspecified",
+        "value" : {
+          "height" : 1024,
+          "width" : 1024
+        }
+      },
+      {
+        "icon-studio-appearance" : "unspecified",
+        "icon-studio-idiom" : "watchOS",
+        "icon-studio-localization" : "unspecified",
+        "value" : {
+          "height" : 1088,
+          "width" : 1088
+        }
+      }
+    ]
+  }
+}

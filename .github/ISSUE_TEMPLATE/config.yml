@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Compatibility and request guide
+    url: https://github.com/UnkAtreus/Cellio/blob/main/docs/device-support.md
+    about: Check the current evidence and connection-mode limits before reporting.

@@ -1,0 +1,23 @@
+name: macOS checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Toolchain
+        run: xcodebuild -version && swift --version
+      - name: Core tests
+        run: swift test
+      - name: Permissions regressions and three runnable mutants
+        run: |
+          python3 Tests/PermissionsNavigation/run.py
+          python3 Tests/PermissionsNavigation/run-supplement.py
+      - name: Universal development build
+        env:
+          CELLIO_ADHOC_DEVELOPMENT: '1'
+        run: ./scripts/build-macos.sh

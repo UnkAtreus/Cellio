@@ -1,0 +1,20 @@
+{
+  "SPBluetoothDataType": [
+    {
+      "device_connected": [
+        {
+          "Synthetic PRO X2 Bluetooth Headset": {
+            "device_address": "02:00:00:00:00:42",
+            "device_batteryLevelMain": "100%",
+            "device_firmwareVersion": "1.0.0",
+            "device_minorType": "Headset",
+            "device_productID": "0x0004",
+            "device_rssi": "-38",
+            "device_services": "0x800019 < HFP AVRCP A2DP ACL >",
+            "device_vendorID": "0x0094"
+          }
+        }
+      ]
+    }
+  ]
+}
