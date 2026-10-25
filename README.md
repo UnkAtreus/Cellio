@@ -13,8 +13,6 @@ Cellio is an open-source native macOS app for checking accessory batteries witho
 - Choose which devices and components to monitor or display; hide old devices and manage linked connections.
 - Pin up to three readings in the menu bar, using percentages or battery gauges, with optional separators.
 - System, Light or Dark appearance, plus a choice of app artwork.
-- Start at login and a dedicated Permissions page.
-- Sparkle update integration. **A public automatic-update feed is not configured in this preview**; download updates from Releases.
 
 Missing readings stay unknown rather than becoming 0%. A status dot keeps the menu compact; hover for a short explanation or click an orange/red dot to copy diagnostics.
 
