@@ -1,6 +1,6 @@
 # Build Cellio
 
-Use a Mac with Xcode, its macOS SDK and command-line tools, plus Python 3. The app targets macOS13+ and packages Apple silicon and Intel slices. Build requirements depend on the selected Xcode/SDK; the release was built with the Xcode27 toolchain.
+Use a Mac with **Xcode27**, its macOS SDK and command-line tools, plus Python 3. The app targets macOS13+ and packages Apple silicon and Intel slices. The release uses Xcode27. Native icon output is deliberately checked against its approved output, so a different asset compiler can fail packaging even after Swift compilation succeeds.
 
 ```sh
 git clone https://github.com/UnkAtreus/Cellio.git
@@ -25,3 +25,5 @@ Create and retain your own signing identity; the project does not contain the ma
 Optional release inputs include `CELLIO_BUNDLE_VERSION`, `CELLIO_DISPLAY_VERSION`, `CELLIO_OUTPUT_APP`, and the paired `CELLIO_UPDATE_FEED_URL`/`CELLIO_UPDATE_PUBLIC_KEY`. Bundle versions must increase across updates. Public updater configuration must use a real HTTPS feed and its corresponding publisher key; never include a private key in an app or repository.
 
 The release script embeds and signs Sparkle’s helpers inside out, then signs and verifies the app. Do not use `codesign --deep` to sign. Preserve framework symlinks when copying or archiving the bundle. The initial preview archive contains the exact accepted build4; its corresponding source is the release tag.
+
+CI selects GitHub’s [official `xcode-27` runner](https://github.blog/changelog/2026-10-15-xcode-27-runner-image-generally-available/) to match this requirement. The first default macOS26 runner used Xcode26.6: core/Permissions tests passed, but packaging rejected its different generated ICNS bytes. The guard remains enabled; the declared toolchain is selected explicitly.

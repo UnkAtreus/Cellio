@@ -60,7 +60,7 @@ CELLIO_ADHOC_DEVELOPMENT=1 ./scripts/build-macos.sh
 open dist/Cellio.app
 ```
 
-Use Xcode with the macOS SDK and Python 3. The published test target covers portable core regressions; [validation notes](docs/validation.md) distinguish it from historical native campaigns. The pinned Sparkle framework and its licenses are included so building does not depend on an unpinned download. Ad-hoc signing above is for local development; use a persistent certificate for builds you install repeatedly. [Build instructions](docs/building.md).
+Use Xcode27 with the macOS SDK and Python 3. The published test target covers portable core regressions; [validation notes](docs/validation.md) distinguish it from historical native campaigns. The pinned Sparkle framework and its licenses are included so building does not depend on an unpinned download. Ad-hoc signing above is for local development; use a persistent certificate for builds you install repeatedly. [Build instructions](docs/building.md).
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before changing device readers, identity merging, permissions or UI. Community device profiles and a constrained extension system are planned; there is no installable plugin SDK yet. Apple Watch companion setup is deferred.
 
