@@ -130,7 +130,11 @@ def app_info(app):
     info = plistlib.loads((app / "Contents/Info.plist").read_bytes())
     if "SUFeedURL" in info or "SUPublicEDKey" in info:
         require_pre_extraction_verification(info)
-    run("/usr/bin/lipo", app / "Contents/MacOS" / info["CFBundleExecutable"], "-verify_arch", "arm64", "x86_64")
+    architectures = set(run("/usr/bin/xcrun", "lipo", "-archs",
+                            app / "Contents/MacOS" / info["CFBundleExecutable"],
+                            capture_output=True, text=True).stdout.split())
+    if not {"arm64", "x86_64"}.issubset(architectures):
+        fail("Packaged app must contain arm64 and x86_64 slices")
     return app, info
 
 
