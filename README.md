@@ -4,7 +4,7 @@
 
 Cellio is an open-source native macOS app for checking accessory batteries without opening several vendor apps. This is an **early preview**: compatibility depends on the device, firmware and connection mode.
 
-[Download the preview](https://github.com/UnkAtreus/Cellio/releases/tag/v1.0.0-alpha.2) · [Supported devices](docs/device-support.md) · [Request a device](https://github.com/UnkAtreus/Cellio/issues/new?template=device-support.yml)
+[Download the DMG](https://github.com/UnkAtreus/Cellio/releases/download/v1.0.0-alpha.3/Cellio-1.0.0-alpha.3-macos-universal.dmg) · [All downloads](https://github.com/UnkAtreus/Cellio/releases/tag/v1.0.0-alpha.3) · [Supported devices](docs/device-support.md) · [Request a device](https://github.com/UnkAtreus/Cellio/issues/new?template=device-support.yml)
 
 ## Features
 
@@ -18,9 +18,11 @@ Missing readings stay unknown rather than becoming 0%. A status dot keeps the me
 
 ## Install
 
-1. Download the universal macOS ZIP from [Releases](https://github.com/UnkAtreus/Cellio/releases).
-2. Extract it, move **Cellio.app** into **Applications**, and open it. Cellio starts in the menu bar.
+1. Download the universal macOS **DMG** from [Releases](https://github.com/UnkAtreus/Cellio/releases).
+2. Open it, drag **Cellio.app** onto **Applications**, then eject the disk image and open Cellio from Applications. Cellio starts in the menu bar.
 3. Open **Details & Settings… → Permissions** and allow the access needed by your devices. Notification permission is needed only for macOS alerts.
+
+Prefer ZIP? Extract it and move **Cellio.app** to Applications. The ZIP contains only the app. License and third-party notices are included inside the app bundle in `Contents/Resources`.
 
 Requires **macOS 13 or later**, on Apple silicon or Intel. Native checks have been performed on macOS 26 and 27; the minimum deployment target is not a claim that every supported OS/device combination was physically tested.
 
@@ -28,7 +30,7 @@ The preview uses a persistent **self-signed certificate**, without Apple notariz
 
 ## Screenshots
 
-Native Dark UI on macOS 26. The menu bar strip and Settings captures are from **build 5 (alpha.2)**, with real readings at capture time. Menu and alert previews use the same native renderers with **demonstration readings** and generic device names.
+Native Dark UI on macOS 26. The menu bar strip and Settings captures are from **build 5 (alpha.2)**, with real readings at capture time; alpha.3 keeps the same UI and changes packaging only. Menu and alert previews use the same native renderers with **demonstration readings** and generic device names.
 
 **Battery menu** — device batteries together, including separate AirPods components.
 
