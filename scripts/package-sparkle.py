@@ -17,6 +17,12 @@ def run(*arguments, capture=False):
                           capture_output=capture, text=capture)
 
 
+def verify_universal(binary):
+    architectures = set(run("/usr/bin/xcrun", "lipo", "-archs", binary, capture=True).stdout.split())
+    if not {"arm64", "x86_64"}.issubset(architectures):
+        raise ValueError("Missing arm64 or x86_64 slice: " + str(binary))
+
+
 def main():
     operation, app_path = sys.argv[1:]
     app = Path(app_path).resolve(strict=True)
@@ -48,7 +54,7 @@ def main():
     for binary in binaries:
         if not binary.is_file() or not os.access(binary, os.X_OK):
             raise ValueError("Missing executable Sparkle helper: " + str(binary))
-        run("/usr/bin/lipo", binary, "-verify_arch", "arm64", "x86_64")
+        verify_universal(binary)
     for link in (framework / "Versions/Current", framework / "Sparkle", framework / "Resources"):
         if not link.is_symlink() or not link.resolve().is_relative_to(framework):
             raise ValueError("Required official framework symlink missing: " + str(link))

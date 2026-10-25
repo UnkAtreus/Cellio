@@ -101,7 +101,11 @@ if [[ -n "$(find "$mac_staged_app" -type f ! -path "$mac_staged_app/Contents/Mac
     print -u2 "Unexpected file in staged app"
     exit 1
 fi
-lipo "$mac_staged_app/Contents/MacOS/cellio" -verify_arch arm64 x86_64
+mac_architectures=" $(xcrun lipo -archs "$mac_staged_app/Contents/MacOS/cellio") "
+if [[ "$mac_architectures" != *" arm64 "* || "$mac_architectures" != *" x86_64 "* ]]; then
+    print -u2 "Missing arm64 or x86_64 app slice"
+    exit 1
+fi
 plutil -lint "$mac_staged_app/Contents/Info.plist"
 mac_sign_identity="${CELLIO_SIGN_IDENTITY:-}"
 mac_sign_mode="${CELLIO_SIGN_MODE:-${mac_sign_identity:+local}}"
