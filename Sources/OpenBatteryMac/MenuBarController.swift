@@ -68,6 +68,12 @@ import OpenBatteryCore
     }
     func setDisplay(_ value: MenuBarDisplay) { revokePending(); var next=configuration; next.display=value; apply(next,selection:selection) }
     func setSeparator(_ value: MenuBarSeparator) { revokePending(); var next=configuration; next.separator=value; apply(next,selection:selection) }
+    func setSpacing(_ value: Int) {
+        revokePending()
+        guard !unavailable, MenuBarConfiguration.spacingRange.contains(value), value != configuration.spacing else { return }
+        var next=configuration; next.spacing=value; apply(next,selection:selection)
+    }
+    func resetSpacing() { setSpacing(MenuBarConfiguration.defaultSpacing) }
     func reload() { revokePending(); _=store.reload(); revision &+= 1 }
     func reset() { revokePending(); guard unavailable else { return }; apply(MenuBarConfiguration(),selection:nil,reset:true) }
     func retry(settings: DeviceSettingsStore) {

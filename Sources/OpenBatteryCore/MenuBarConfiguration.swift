@@ -17,16 +17,29 @@ public struct MenuBarPin: Codable, Equatable, Identifiable {
     }
 }
 public struct MenuBarConfiguration: Codable, Equatable {
+    public static let defaultSpacing = 8
+    public static let spacingRange = 4...16
     public var version: Int = 1
     public var display: MenuBarDisplay = .percentage
     public var separator: MenuBarSeparator = .none
+    public var spacing: Int = defaultSpacing
     public var pins: [MenuBarPin] = []
     public init() {}
+    private enum CodingKeys: String, CodingKey { case version, display, separator, spacing, pins }
+    public init(from decoder: Decoder) throws {
+        let values=try decoder.container(keyedBy:CodingKeys.self)
+        version=try values.decode(Int.self,forKey:.version)
+        display=try values.decode(MenuBarDisplay.self,forKey:.display)
+        separator=try values.decode(MenuBarSeparator.self,forKey:.separator)
+        spacing=values.contains(.spacing) ? try values.decode(Int.self,forKey:.spacing):Self.defaultSpacing
+        pins=try values.decode([MenuBarPin].self,forKey:.pins)
+    }
     public static func validText(_ value: String, limit: Int = 512) -> Bool {
         !value.isEmpty && value.utf8.count <= limit && !value.unicodeScalars.contains { CharacterSet.controlCharacters.contains($0) }
     }
     public func validate() throws {
-        guard version == 1, pins.count <= 3, Set(pins.map(\.id)).count == pins.count else { throw MenuBarStorageError.invalidData }
+        guard version == 1, Self.spacingRange.contains(spacing), pins.count <= 3,
+              Set(pins.map(\.id)).count == pins.count else { throw MenuBarStorageError.invalidData }
         var pairs=Set<ComponentID>()
         for pin in pins {
             guard UUID(uuidString:pin.id) != nil, Self.validText(pin.deviceID), Self.validText(pin.componentID),
@@ -38,7 +51,9 @@ public struct MenuBarConfiguration: Codable, Equatable {
     public static func decode(_ data: Data) throws -> Self {
         guard data.count <= 65_536,
               let raw=try JSONSerialization.jsonObject(with:data) as? [String:Any],
-              Set(raw.keys) == Set(["version","display","separator","pins"]), StrictJSON.integer(raw["version"]) == 1,
+              [Set(["version","display","separator","pins"]),Set(["version","display","separator","spacing","pins"])].contains(Set(raw.keys)),
+              StrictJSON.integer(raw["version"]) == 1,
+              !raw.keys.contains("spacing") || StrictJSON.integer(raw["spacing"]).map(Self.spacingRange.contains) == true,
               let pins=raw["pins"] as? [[String:Any]], pins.count <= 3,
               pins.allSatisfy({ Set($0.keys) == Set(["id","deviceID","componentID","sourceMembers","deviceName"]) }) else { throw MenuBarStorageError.invalidData }
         let result=try JSONDecoder().decode(Self.self,from:data)
@@ -181,7 +196,9 @@ public struct MenuBarLayout: Equatable {
     public static let maximumWidth: Double = 280
     public static let iconWidth: Double = 24
     public static let overflowWidth: Double = 26
-    public static let gap: Double = 3
+    public static let gap = Double(MenuBarConfiguration.defaultSpacing)
+    /// Total native image edge inset, retained once for either content or fallback.
+    public static let imageInsets: Double = 4
     // Observed native target adds 2pt to item.length. width reserves that once,
     // against both the public geometry budget and the 280pt policy cap.
     public static let nativeTargetOverhead: Double = 2
@@ -195,21 +212,33 @@ public struct MenuBarLayout: Equatable {
         }
     }
     public static func pinWidth(component: String) -> Double {
-        // Glyph 12 + gap 2 + quantity 38 + gap 1 + two 8pt state markers.
+        // Conservative fallback: glyph 12 + current gap 8 + safety reserve 8
+        // + maximum quantity ceiling 39 + gap 1 + two 8pt state markers.
+        // Native callers supply exact occupied widths instead of this estimate.
         let label=discriminatorWidth(component:component)
-        return 69 + label + (label > 0 ? 2:0)
+        return 84 + label + (label > 0 ? 2:0)
     }
-    public static func project(_ pins: [MenuBarResolvedPin], budget: Double?) -> Self {
+    public static func project(_ pins: [MenuBarResolvedPin], budget: Double?,
+                               spacing: Int = MenuBarConfiguration.defaultSpacing,
+                               contentWidths: [String:Double]? = nil) -> Self {
         let iconOnlyWidth=iconWidth+nativeTargetOverhead
-        guard let budget, budget.isFinite, budget >= iconOnlyWidth else { return .init(displayedIDs:[],overflow:0,width:iconOnlyWidth) }
+        let fallback=Self(displayedIDs:[],overflow:0,width:iconOnlyWidth)
+        guard MenuBarConfiguration.spacingRange.contains(spacing),
+              let budget, budget.isFinite, budget >= iconOnlyWidth else { return fallback }
         let available=min(maximumWidth,budget)
         let eligible=pins.filter { $0.state != .hidden && $0.state != .coalesced }
-        guard !eligible.isEmpty else { return .init(displayedIDs:[],overflow:0,width:iconOnlyWidth) }
+        guard !eligible.isEmpty else { return fallback }
+        let widths: [Double?]=eligible.map { pin in
+            if let contentWidths { return contentWidths[pin.id] }
+            return pinWidth(component:pin.pin.componentID)
+        }
+        guard widths.allSatisfy({ $0.map { $0.isFinite && $0 > 0 } == true }) else { return fallback }
         for count in stride(from:eligible.count,through:1,by:-1) {
             let selected=Array(eligible.prefix(count)), overflow=eligible.count-count
-            let width=iconOnlyWidth+selected.reduce(0) { $0+pinWidth(component:$1.pin.componentID) }+Double(max(0,count-1))*gap+(overflow > 0 ? overflowWidth:0)
+            let width=imageInsets+nativeTargetOverhead+widths.prefix(count).reduce(0) { $0+($1 ?? 0) }
+                + Double(count-1)*Double(spacing)+(overflow > 0 ? overflowWidth:0)
             if width <= available { return .init(displayedIDs:selected.map(\.id),overflow:overflow,width:width) }
         }
-        return .init(displayedIDs:[],overflow:0,width:iconOnlyWidth)
+        return fallback
     }
 }

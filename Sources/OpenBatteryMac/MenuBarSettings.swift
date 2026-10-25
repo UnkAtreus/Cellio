@@ -45,6 +45,17 @@ import OpenBatteryCore
                     }.labelsHidden().pickerStyle(.menu).frame(width:152)
                         .accessibilityIdentifier("cellio.menubar.separator")
                 }.padding(.horizontal,12).frame(height:44)
+                Divider().padding(.leading,12)
+                ViewThatFits(in:.horizontal) {
+                    HStack {
+                        Text("Item spacing").fixedSize().frame(maxWidth:.infinity,alignment:.leading)
+                        spacingControls
+                    }.frame(height:44)
+                    VStack(alignment:.leading,spacing:6) {
+                        Text("Item spacing")
+                        spacingControls.frame(maxWidth:.infinity,alignment:.trailing)
+                    }.padding(.vertical,10)
+                }.padding(.horizontal,12)
             }.disabled(controller.unavailable)
             HStack {
                 Text("Pinned Items").font(.headline).accessibilityAddTraits(.isHeader)
@@ -87,11 +98,25 @@ import OpenBatteryCore
             Button("Reset Menu Bar Settings",role:.destructive) { controller.reset() }
             Button("Cancel",role:.cancel) { controller.revokePending() }
         } message: {
-            Text("Removes saved pins and restores Percentage with no separator. Device, dropdown, monitoring and alert settings are kept.")
+            Text("Removes saved pins and restores Percentage, no separator, and 8 pt item spacing. Device, dropdown, monitoring and alert settings are kept.")
         }
         .onChange(of:controller.adding) { adding in if !adding { focus=controller.selection == nil ? "add":"list" } }
         .onDisappear { controller.leavePage() }
         .onReceive(Timer.publish(every:15,on:.main,in:.common).autoconnect()) { now=$0 }
+    }
+    private var spacingControls: some View {
+        HStack(spacing:8) {
+            MenuBarSpacingSlider(value:controller.configuration.spacing,onChange:controller.setSpacing)
+                .frame(width:136,height:26)
+            Text("\(controller.configuration.spacing) pt")
+                .monospacedDigit().frame(width:38,alignment:.trailing)
+                .accessibilityHidden(true)
+                .accessibilityIdentifier("cellio.menubar.spacing.value")
+            Button("Reset") { controller.resetSpacing() }
+                .fixedSize().disabled(controller.configuration.spacing == MenuBarConfiguration.defaultSpacing)
+                .accessibilityLabel("Reset item spacing")
+                .accessibilityIdentifier("cellio.menubar.spacing.reset")
+        }
     }
     private var rowContent: [MenuBarPinTable.Row] {
         let records=model.sortedRecords
@@ -156,6 +181,41 @@ import OpenBatteryCore
                     .disabled(!controller.canAdd(settings:model.deviceSettings)).accessibilityIdentifier("cellio.menubar.add.commit")
             }
         }.padding(20).frame(width:380)
+    }
+}
+
+/// Native continuous slider: each drag or keyboard tick is one atomic layout transaction.
+private struct MenuBarSpacingSlider: NSViewRepresentable {
+    let value: Int
+    let onChange: (Int) -> Void
+    @Environment(\.isEnabled) private var isEnabled
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+    func makeNSView(context: Context) -> NSSlider {
+        let slider=NSSlider(value:Double(value),minValue:Double(MenuBarConfiguration.spacingRange.lowerBound),
+                            maxValue:Double(MenuBarConfiguration.spacingRange.upperBound),
+                            target:context.coordinator,action:#selector(Coordinator.changed(_:)))
+        slider.isContinuous=true
+        slider.numberOfTickMarks=MenuBarConfiguration.spacingRange.count
+        slider.allowsTickMarkValuesOnly=true
+        slider.setAccessibilityLabel("Item spacing")
+        slider.setAccessibilityIdentifier("cellio.menubar.spacing")
+        return slider
+    }
+    func updateNSView(_ slider: NSSlider, context: Context) {
+        context.coordinator.owner=self
+        slider.integerValue=value
+        slider.isEnabled=isEnabled
+        slider.setAccessibilityValueDescription("\(value) points")
+    }
+    final class Coordinator: NSObject {
+        var owner: MenuBarSpacingSlider
+        init(_ owner: MenuBarSpacingSlider) { self.owner=owner }
+        @objc func changed(_ slider: NSSlider) {
+            let range=MenuBarConfiguration.spacingRange
+            let value=min(range.upperBound,max(range.lowerBound,Int(slider.doubleValue.rounded())))
+            slider.integerValue=value
+            owner.onChange(value)
+        }
     }
 }
 

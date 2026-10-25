@@ -84,22 +84,24 @@ final class MenuBarFocusedAcceptanceTests: XCTestCase {
         c.pins = ["case", "left", "right"].map { MenuBarPin(deviceID: "pods", componentID: $0, sourceMembers: ["pods"], deviceName: "QA Pods") }
         let settings = DeviceSettingsStore(persistence: MemoryDeviceSettingsPersistence())
         let pins = MenuBarPinPolicy.resolve(c, settings: settings)
-        let all = MenuBarLayout.project(pins, budget: 10_000)
+        // Supplied synthetic occupied spans keep ordered-prefix coverage independent of font bounds.
+        let occupiedWidths = Dictionary(uniqueKeysWithValues: zip(pins.map(\.id), [80.0, 64.0, 65.0]))
+        let all = MenuBarLayout.project(pins, budget: 10_000, contentWidths: occupiedWidths)
         XCTAssertLessThanOrEqual(all.width, 280); XCTAssertEqual(all.displayedIDs, c.pins.map(\.id)); XCTAssertEqual(all.overflow, 0)
-        // Native Case alone is 119pt; its reserved +2 field adds 26pt: 145pt whole.
-        let narrow = MenuBarLayout.project(pins, budget: 140)
+        // Conservative Case108 + image insets4 + native overhead2 + overflow26 =140pt; no icon tail.
+        let narrow = MenuBarLayout.project(pins, budget: 139)
         XCTAssertEqual(narrow.displayedIDs, []); XCTAssertEqual(narrow.overflow, 0)
-        XCTAssertEqual(narrow.width, 26); XCTAssertLessThanOrEqual(narrow.width, 140)
-        let limited = MenuBarLayout.project(pins, budget: 145)
-        XCTAssertEqual(limited.displayedIDs, [c.pins[0].id]); XCTAssertEqual(limited.overflow, 2); XCTAssertLessThanOrEqual(limited.width, 145)
-        XCTAssertEqual(limited.width, 145)
+        XCTAssertEqual(narrow.width, 26); XCTAssertLessThanOrEqual(narrow.width, 139)
+        let limited = MenuBarLayout.project(pins, budget: 140)
+        XCTAssertEqual(limited.displayedIDs, [c.pins[0].id]); XCTAssertEqual(limited.overflow, 2); XCTAssertLessThanOrEqual(limited.width, 140)
+        XCTAssertEqual(limited.width, 140)
         for budget: Double? in [nil, .nan, .infinity, -1, 23, 100] {
             let layout = MenuBarLayout.project(pins, budget: budget)
             XCTAssertEqual(layout.displayedIDs, []); XCTAssertEqual(layout.overflow, 0)
             XCTAssertGreaterThan(layout.width, 0); XCTAssertLessThanOrEqual(layout.width, 280)
         }
         var hidden = pins; hidden[0].state = .hidden
-        let visible = MenuBarLayout.project(hidden, budget: 140)
+        let visible = MenuBarLayout.project(hidden, budget: 139)
         XCTAssertEqual(visible.displayedIDs, [c.pins[1].id]); XCTAssertEqual(visible.overflow, 1)
         XCTAssertEqual(c.pins.map(\.componentID), ["case", "left", "right"])
     }
