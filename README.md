@@ -30,13 +30,28 @@ The preview uses a persistent **self-signed certificate**, without Apple notariz
 
 ## Screenshots
 
-Actual native build4 captures on macOS26, using Dark appearance. The battery value is the reading shown at capture time.
+Native Dark UI on macOS 26. Menu and alert previews use **demonstration readings** and generic device names. The menu bar strip previews the actual renderer; Settings captures below are from released build 4.
 
-![MX Master4 battery and device controls](docs/images/mouse-dark.png)
+**Battery menu** — device batteries together, including separate AirPods components.
+
+![Cellio battery menu with AirPods Pro, MAXFIT8, MX Master 4 and PRO X 2 demonstration readings](docs/images/menu-battery-dark.png)
+
+**Pinned menu bar readings** — see selected batteries without opening the menu.
+
+![Native menu bar renderer preview with mouse and headset battery percentages](docs/images/menubar-pinned-dark.png)
+
+**Low-battery alerts** — Large and Small on-screen layouts shown below. Choose from three layouts and nine positions, or use macOS notifications.
+
+![Large on-screen low-battery alert preview for an AirPods Pro case at 20 percent](docs/images/notification-large-dark.png)
+
+![Small on-screen low-battery alert preview for an AirPods Pro case at 20 percent](docs/images/notification-small-dark.png)
 
 <details>
-<summary>General and Permissions</summary>
+<summary>Device controls, General and Permissions</summary>
 
+The device battery value is the reading shown at capture time.
+
+![MX Master4 battery and device controls](docs/images/mouse-dark.png)
 ![General settings](docs/images/general-dark.png)
 ![Permissions](docs/images/permissions-dark.png)
 
