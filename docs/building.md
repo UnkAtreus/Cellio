@@ -1,6 +1,6 @@
 # Build Cellio
 
-Use a Mac with **Xcode27**, its macOS SDK and command-line tools, plus Python 3. The app targets macOS13+ and packages Apple silicon and Intel slices. The release uses Xcode27. Native icon output is deliberately checked against its approved output, so a different asset compiler can fail packaging even after Swift compilation succeeds.
+Use a Mac with **Xcode27**, its macOS SDK and command-line tools, plus Python 3. The app targets macOS13+ and packages Apple silicon and Intel slices. The release uses Xcode27. Packaging checks the approved native Dark image layers and the exact canonical Dark ICNS shipped in the app. A discarded intermediate ICNS is not assumed to have identical serialized bytes across asset compiler/host versions.
 
 ```sh
 git clone https://github.com/UnkAtreus/Cellio.git
@@ -26,4 +26,4 @@ Optional release inputs include `CELLIO_BUNDLE_VERSION`, `CELLIO_DISPLAY_VERSION
 
 The release script embeds and signs Sparkle’s helpers inside out, then signs and verifies the app. Do not use `codesign --deep` to sign. Preserve framework symlinks when copying or archiving the bundle. The initial preview archive contains the exact accepted build4; its corresponding source is the release tag.
 
-CI selects GitHub’s [official `xcode-27` runner](https://github.blog/changelog/2026-10-15-xcode-27-runner-image-generally-available/) to match this requirement. The first default macOS26 runner used Xcode26.6: core/Permissions tests passed, but packaging rejected its different generated ICNS bytes. The guard remains enabled; the declared toolchain is selected explicitly.
+CI selects GitHub’s [official `xcode-27` runner](https://github.blog/changelog/2026-10-15-xcode-27-runner-image-generally-available/) to match this requirement. The first default macOS26 runner used Xcode26.6: core/Permissions tests passed, but packaging rejected its different generated ICNS bytes. The original intermediate-file checksum was not a portable acceptance check: the Xcode27 runner also emitted different bytes. The corrected check verifies the actual bundled canonical ICNS; native layer/image/dimension/lighting checks and all immutable input hashes remain enabled.

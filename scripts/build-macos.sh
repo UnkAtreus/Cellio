@@ -80,16 +80,17 @@ for appearance in ['NSAppearanceNameAqua','NSAppearanceNameDarkAqua']:
  assert layers[0]['LayerSize']=='1024,1024' and not layers[0].get('LayerHasLightingEffects',False)
 assert {x.get('Name') for x in items if x.get('AssetType')=='IconImageStack'}=={'Cellio'}
 ICON_OUTPUTS
-# The native default and the preserved legacy fallback must both use approved Dark.
-python3 - "$mac_stage_root/icons/Cellio.icns" <<'ICON_DEFAULT_FALLBACK'
+# The compiled native layers above and the actual bundled fallback use approved Dark.
+# actool's intermediate ICNS encoding varies with the host/toolchain and is not shipped.
+cp "$mac_stage_root/icons/Assets.car" "$mac_staged_app/Contents/Resources/Assets.car"
+cp Resources/Cellio.icns "$mac_staged_app/Contents/Resources/Cellio.icns"
+python3 - "$mac_staged_app/Contents/Resources/Cellio.icns" <<'ICON_DEFAULT_FALLBACK'
 from pathlib import Path
 import hashlib,sys
 expected='c07e095e76ad3baba71f85d87a5e0873e864d26a2c9412a8ed90ba1d0b38b5a4'
 if hashlib.sha256(Path(sys.argv[1]).read_bytes()).hexdigest()!=expected:
- raise SystemExit('Native default Dark ICNS mismatch')
+ raise SystemExit('Bundled Dark ICNS mismatch')
 ICON_DEFAULT_FALLBACK
-cp "$mac_stage_root/icons/Assets.car" "$mac_staged_app/Contents/Resources/Assets.car"
-cp Resources/Cellio.icns "$mac_staged_app/Contents/Resources/Cellio.icns"
 python3 scripts/package-sparkle.py embed "$mac_staged_app"
 if [[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' "$mac_staged_app/Contents/Info.plist")" != Cellio.icns || "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconName' "$mac_staged_app/Contents/Info.plist")" != Cellio ]]; then
     print -u2 "Missing native bundle icon declarations"
